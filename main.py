@@ -1,41 +1,9 @@
 import requests
 import json
 from enum import Enum
+from score import Score
 
 key = "1a513545298a4bad0ef9e23b5df5950795ca7b42"
-
-class Mods(Enum):
-    NoFail         = 1
-    Easy           = 2
-    TouchDevice    = 4
-    Hidden         = 8
-    HardRock       = 16
-    SuddenDeath    = 32
-    DoubleTime     = 64
-    Relax          = 128
-    HalfTime       = 256
-    Nightcore      = 512 # Only set along with DoubleTime. i.e: NC only gives 576
-    Flashlight     = 1024
-    Autoplay       = 2048
-    SpunOut        = 4096
-    Relax2         = 8192 # Autopilot
-    Perfect        = 16384 # Only set along with SuddenDeath. i.e: PF only gives 16416
-    Key4           = 32768
-    Key5           = 65536
-    Key6           = 131072
-    Key7           = 262144
-    Key8           = 524288
-    FadeIn         = 1048576
-    Random         = 2097152
-    Cinema         = 4194304
-    Target         = 8388608
-    Key9           = 16777216
-    KeyCoop        = 33554432
-    Key1           = 67108864
-    Key3           = 134217728
-    Key2           = 268435456
-    ScoreV2        = 536870912
-    LastMod        = 1073741824
 
 
 def get_user_info(user_name, days_ago=None):
@@ -101,6 +69,9 @@ def print_beatmap_difficulty(beatmap_info):
     print()
 
 
+def prn_obj(obj):
+    print('\n'.join(['%s:%s' % item for item in obj.__dict__.items()]))
+
 def print_beatmap_common_mods_difficulty(map_id):
     mod_lists = [[], [Mods.HardRock], [Mods.Hidden], [Mods.HardRock, Mods.Hidden], [Mods.HalfTime], [Mods.DoubleTime]]
     for mod_list in mod_lists:
@@ -116,14 +87,34 @@ def print_beatmap_common_mods_difficulty(map_id):
         print_beatmap_difficulty(beatmap_info)
 
 
-user_info = get_user_info("wenhuo", "25")
-display_user_info(user_info)
-
-user_info = get_user_info("chakecai")
-display_user_info(user_info)
-
-user_info = get_user_info("wjy")
-display_user_info(user_info)
+# user_info = get_user_info("wenhuo")
+# display_user_info(user_info)
+#
+# user_info = get_user_info("chakecai")
+# display_user_info(user_info)
+#
+# user_info = get_user_info("wjy")
+# display_user_info(user_info)
 
 
 # print_beatmap_common_mods_difficulty(1675834)
+
+
+def get_user_best_scores(user_name, limit=100):
+    url = "https://osu.ppy.sh/api/get_user_best"
+    params_dict = {
+        "k": key,
+        "u": user_name,
+        "limit": limit
+    }
+    response = requests.get(url, params=params_dict)
+    all_score_info = json.loads(response.text)
+    count = 0
+    for score_info in all_score_info:
+        count += 1
+        score = Score(score_info)
+        print("第%d位最好成绩:" % count)
+        score.print_important_info()
+
+
+get_user_best_scores("wenhuo")
