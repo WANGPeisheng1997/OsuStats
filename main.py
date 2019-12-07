@@ -109,12 +109,12 @@ def get_user_best_scores(user_name, limit=100):
     }
     response = requests.get(url, params=params_dict)
     all_score_info = json.loads(response.text)
-    count = 0
-    for score_info in all_score_info:
-        count += 1
-        score = Score(score_info)
-        print("第%d位最好成绩:" % count)
-        score.print_important_info()
+    return all_score_info
+    # count = 0
+    # for score_info in all_score_info:
+    #     count += 1
+    #     score = Score(score_info)
+    #     print("第%d位最好成绩:" % count)
+    #     score.print_important_info()
 
 
-get_user_best_scores("wenhuo")

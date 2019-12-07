@@ -15,7 +15,7 @@ class Score:
         self.count50 = int(score_info["count50"])
         self.count100 = int(score_info["count100"])
         self.count300 = int(score_info["count300"])
-        self.countmiss = int(score_info["countmiss"])
+        self.countmiss = int(score_info["countmiss"])                                   
         self.countkatu = int(score_info["countkatu"])
         self.countgeki = int(score_info["countgeki"])
         self.perfect = bool(int(score_info["perfect"]))
@@ -26,27 +26,34 @@ class Score:
         self.rank = score_info["rank"]
         self.pp = float(score_info["pp"])
         self.replay_available = bool(int(score_info["replay_available"]))
+
+        #following are supplementary information
         self.available_mods = []
         for mod in self.enabled_mods:
-            if mod is not AllMods.Hidden:
+            if mod in [AllMods.Easy, AllMods.HardRock, AllMods.DoubleTime, AllMods.HalfTime]:
                 self.available_mods.append(mod)
         self.beatmap = Beatmap(map_id=self.beatmap_id, mod_list=self.available_mods)
         self.acc = calculate_pp.acc_calc(self.count300, self.count100, self.count50, self.countmiss)
-        self.maxpp = calculate_pp.calculate_pp(beatmap=self.beatmap, c100=0, c50=0, misses=0,
-                                               used_mods=Mods(mod_list_to_string(self.enabled_mods)),
-                                               combo=None, score_version=1, c300=None).pp
+        # self.maxpp = calculate_pp.calculate_pp(beatmap=self.beatmap, c100=0, c50=0, misses=0,
+        #                                        used_mods=Mods(mod_list_to_string(self.enabled_mods)),
+        #                                        combo=None, score_version=1, c300=None).pp
 
     def print_important_info(self):
         print("日期：%s" % self.date)
         print("地图ID：%s" % self.beatmap_id)
-        print("地图名：%s(%s)[+%s]" % (self.beatmap.song_name, self.beatmap.difficulty_name, mod_list_to_string(self.enabled_mods)))
-        print("难度星级：%.2f (Aim:%.2f, Speed:%.2f, Extreme:%.2f)" % (self.beatmap.stars, self.beatmap.aim, self.beatmap.speed, abs(self.beatmap.aim-self.beatmap.speed) * 0.5))
+        mod_names = mod_list_to_string(self.enabled_mods)
+        if mod_names == "":
+            mod_names = "None"
+        print("地图名：%s(%s)[+%s]" % (self.beatmap.song_name, self.beatmap.difficulty_name, mod_names))
+        print("难度星级：%.2f (Aim:%.2f, Speed:%.2f, Extreme:%.2f)" %
+              (self.beatmap.stars, self.beatmap.aim, self.beatmap.speed, abs(self.beatmap.aim-self.beatmap.speed) * 0.5))
         print("CS%.1f AR%.1f OD%.1f HP%.1f" % (float(self.beatmap.cs),
                                                float(self.beatmap.ar),
                                                float(self.beatmap.od),
                                                float(self.beatmap.hp)))
         print("==================================================")
-        print("PP：%.2f (Max: %.2f)" % (self.pp, self.maxpp))
+        # print("PP：%.2f (Max: %.2f)" % (self.pp, self.maxpp))
+        print("PP：%.2f" % self.pp)
         print("准确率：%.2f%%" % (self.acc * 100))
         print("Rank：%s" % self.rank)
         print("Combo：%d/%d" % (self.maxcombo, self.beatmap.max_combo))

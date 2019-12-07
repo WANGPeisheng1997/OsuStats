@@ -110,7 +110,8 @@ class Beatmap:
         self.audio_unavailable = bool(int(beatmap_info["audio_unavailable"]))
 
     def print_all_info(self):
-       print('\n'.join(['%s: %s' % item for item in self.__dict__.items()]))
+        print('\n'.join(['%s: %s' % item for item in self.__dict__.items()]))
+        print()
 
     def apply_mods(self, mod_list):
         mods = Mods(mod_list_to_string(mod_list))
@@ -179,6 +180,22 @@ class Beatmap:
         self.cs *= cs_multipier
         self.cs = max(0.0, min(10.0, self.cs))
 
+        hp_multipier = 1
+
+        if mods.hr:
+            hp_multipier = 1.4
+
+        if mods.ez:
+            hp_multipier = 0.5
+
+        self.hp *= hp_multipier
+        self.hp = max(0.0, min(10.0, self.hp))
 
 # bp = Beatmap(1674283, [])
+# bp.print_all_info()
+#
+# bp = Beatmap(1674283, [AllMods.DoubleTime])
+# bp.print_all_info()
+#
+# bp = Beatmap(1674283, [AllMods.DoubleTime, AllMods.HardRock, AllMods.Nightcore])
 # bp.print_all_info()

@@ -148,7 +148,7 @@ def mod_list_to_string(mod_list):
         string += "HT"
     if AllMods.Nightcore in mod_list:
         string += "NC"
-        string.replace("DT", "")
+        string = string.replace("DT", "")
     if AllMods.Flashlight in mod_list:
         string += "FL"
     if AllMods.SpunOut in mod_list:
