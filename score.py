@@ -1,6 +1,5 @@
 from beatmap import Beatmap
 from mods import mod_list_to_val, val_to_mod_list, mod_list_to_string, Mods, AllMods
-import math
 import calculate_pp
 
 class Score:
@@ -15,7 +14,7 @@ class Score:
         self.count50 = int(score_info["count50"])
         self.count100 = int(score_info["count100"])
         self.count300 = int(score_info["count300"])
-        self.countmiss = int(score_info["countmiss"])                                   
+        self.countmiss = int(score_info["countmiss"])
         self.countkatu = int(score_info["countkatu"])
         self.countgeki = int(score_info["countgeki"])
         self.perfect = bool(int(score_info["perfect"]))

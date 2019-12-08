@@ -190,12 +190,3 @@ class Beatmap:
 
         self.hp *= hp_multipier
         self.hp = max(0.0, min(10.0, self.hp))
-
-# bp = Beatmap(1674283, [])
-# bp.print_all_info()
-#
-# bp = Beatmap(1674283, [AllMods.DoubleTime])
-# bp.print_all_info()
-#
-# bp = Beatmap(1674283, [AllMods.DoubleTime, AllMods.HardRock, AllMods.Nightcore])
-# bp.print_all_info()

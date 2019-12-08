@@ -2,6 +2,9 @@ import requests
 import json
 from enum import Enum
 from score import Score
+import pickle
+import time
+import os
 
 key = "1a513545298a4bad0ef9e23b5df5950795ca7b42"
 
@@ -16,6 +19,15 @@ def get_user_info(user_name, days_ago=None):
     response = requests.get(url, params=params_dict)
     user_info = json.loads(response.text)[0]
     return user_info
+
+
+def save_user_info(user_name, user_info):
+    user_info['timestamp'] = time.time()
+    file_name = user_name + '_' + time.strftime("%Y%m%d_%H%M%S", time.localtime()) + '.dat'
+    f = open('user_info/' + file_name, 'wb')
+    pickle.dump(user_info, f)
+    f.close()
+
 
 
 def display_user_info(user_info):
@@ -87,7 +99,6 @@ def print_beatmap_common_mods_difficulty(map_id):
         print_beatmap_difficulty(beatmap_info)
 
 
-# user_info = get_user_info("wenhuo")
 # display_user_info(user_info)
 #
 # user_info = get_user_info("chakecai")
@@ -118,3 +129,39 @@ def get_user_best_scores(user_name, limit=100):
     #     score.print_important_info()
 
 
+def save_user_best_scores(user_name, all_score_info):
+    file_name = "user_bp/" + user_name + ".dat"
+    score_id_list = []
+    best_scores = []
+    if os.path.exists(file_name):
+        fr = open(file_name, "rb")
+        best_scores = pickle.load(fr)
+        fr.close()
+        for score_info in best_scores:
+            score_id_list.append(int(score_info["score_id"]))
+        score_id_list = set(score_id_list)
+
+    for score_info in all_score_info:
+        score_id = int(score_info["score_id"])
+        if score_id not in score_id_list:
+            best_scores.append(score_info)
+            print("new high score!", score_info)
+
+    print(len(best_scores))
+
+    f = open(file_name, 'wb')
+    pickle.dump(best_scores, f)
+    f.close()
+
+# fr = open('user_info/wenhuo_20191207_153751.dat', 'rb')
+# data1 = pickle.load(fr)
+# print(data1)
+
+if __name__ == "__main__":
+    names = ["wenhuo", "4A_59", "wjy", "chakecai"]
+    for name in names:
+        user_info = get_user_info(name)
+        save_user_info(name, user_info)
+
+        all_scores = get_user_best_scores(name)
+        save_user_best_scores(name, all_scores)
